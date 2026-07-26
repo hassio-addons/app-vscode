@@ -34,7 +34,7 @@
         "ARG CODE_SERVER_VERSION=[\"']?(?<currentValue>.+?)[\"']?\\s+"
       ],
       "datasourceTemplate": "github-releases",
-      "depNameTemplate": "cdr/code-server"
+      "depNameTemplate": "coder/code-server"
     },
     {
       "customType": "regex",
