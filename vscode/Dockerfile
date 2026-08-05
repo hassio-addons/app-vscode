@@ -38,7 +38,7 @@ RUN \
         mosquitto-clients=2.0.21-1 \
         net-tools=2.10-1.3 \
         nmap=7.95+dfsg-3 \
-        openssh-client=1:10.0p1-7 \
+        openssh-client=1:10.0p1-7+deb13u4 \
         openssl=3.5.4-1~deb13u1 \
         python3-dev=3.13.5-1 \
         python3-venv=3.13.5-1 \
