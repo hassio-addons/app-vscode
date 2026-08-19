@@ -43,7 +43,7 @@ RUN \
         python3-dev=3.13.5-1 \
         python3-venv=3.13.5-1 \
         python3=3.13.5-1 \
-        unzip=6.0-29 \
+        unzip=6.0-29+deb13u1 \
         uuid-runtime=2.41-5 \
         wget=1.25.0-2 \
         zip=3.0-15 \
