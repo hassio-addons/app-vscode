@@ -82,13 +82,22 @@ fi
 
 # Migrate a non-persistent folder left behind by an older app version
 if bashio::fs.directory_exists ~/.claude && [[ ! -L ~/.claude ]]; then
-    cp -a ~/.claude/. "${CLAUDE_USER_PATH}/" \
-        || bashio::log.warning 'Failed migrating existing Claude Code folder'
-
-    rm -rf ~/.claude \
-        || bashio::log.warning 'Failed removing non-persistent Claude Code folder'
+    if cp -a ~/.claude/. "${CLAUDE_USER_PATH}/"; then
+        rm -rf ~/.claude \
+            || bashio::log.warning \
+                'Failed removing non-persistent Claude Code folder'
+    else
+        bashio::log.warning \
+            'Failed migrating Claude Code folder, leaving it in place'
+    fi
 fi
-ln -sfn "${CLAUDE_USER_PATH}" ~/.claude || bashio::log.warning "Failed linking .claude"
+
+# Only link when nothing is left in the way, as linking onto an existing
+# folder would nest the link inside it
+if [[ ! -e ~/.claude || -L ~/.claude ]]; then
+    ln -sfn "${CLAUDE_USER_PATH}" ~/.claude \
+        || bashio::log.warning "Failed linking .claude"
+fi
 
 # Install user configured/requested packages
 if bashio::config.has_value 'packages'; then
