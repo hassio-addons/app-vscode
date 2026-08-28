@@ -20,34 +20,34 @@ COPY vscode.extensions /root/vscode.extensions
 
 # Setup base system
 ARG BUILD_ARCH=amd64
-ARG CODE_SERVER_VERSION="v4.107.0"
-ARG HA_CLI_VERSION="4.45.0"
+ARG CODE_SERVER_VERSION="v4.135.0"
+ARG HA_CLI_VERSION="5.4.0"
 # hadolint ignore=SC2181, DL3008
 RUN \
     apt-get update \
     \
     && apt-get install -y --no-install-recommends \
         ack=3.8.1-1 \
-        libarchive-tools=3.7.4-4 \
+        libarchive-tools=3.7.4-4+deb13u1 \
         build-essential=12.12 \
         colordiff=1.0.21-1 \
         git=1:2.47.3-0+deb13u1 \
         iputils-ping=3:20240905-3 \
-        locales=2.41-12 \
-        mariadb-client=1:11.8.3-0+deb13u1 \
+        locales=2.41-12+deb13u3 \
+        mariadb-client=1:11.8.6-0+deb13u1 \
         mosquitto-clients=2.0.21-1 \
         net-tools=2.10-1.3 \
         nmap=7.95+dfsg-3 \
-        openssh-client=1:10.0p1-7 \
-        openssl=3.5.4-1~deb13u1 \
+        openssh-client=1:10.0p1-7+deb13u4 \
+        openssl=3.5.7-1~deb13u2 \
         python3-dev=3.13.5-1 \
         python3-venv=3.13.5-1 \
         python3=3.13.5-1 \
-        unzip=6.0-29 \
-        uuid-runtime=2.41-5 \
+        unzip=6.0-29+deb13u1 \
+        uuid-runtime=2.41.5-0+deb13u1 \
         wget=1.25.0-2 \
-        zip=3.0-15 \
-        zsh=5.9-8+b14 \
+        zip=3.0-15+deb13u1 \
+        zsh=5.9-8+b23 \
         less=668-1 \
     \
     && sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen \
