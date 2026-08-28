@@ -97,8 +97,8 @@ fi
 
 # Install user configured/requested packages
 if bashio::config.has_value 'packages'; then
-    apt update \
-        || bashio::exit.nok 'Failed updating Ubuntu packages repository indexes'
+    apt-get update \
+        || bashio::exit.nok 'Failed updating Debian package repository indexes'
 
     for package in $(bashio::config 'packages'); do
         apt-get install -y "$package" \

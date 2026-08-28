@@ -2,7 +2,7 @@ ARG BUILD_FROM=ghcr.io/hassio-addons/debian-base:9.4.0
 # hadolint ignore=DL3006
 FROM ${BUILD_FROM}
 
-# Confiure locale
+# Configure locale
 ENV \
     LANG=en_US.UTF-8 \
     LANGUAGE=en_US:en \
@@ -22,7 +22,6 @@ COPY vscode.extensions /root/vscode.extensions
 ARG BUILD_ARCH=amd64
 ARG CODE_SERVER_VERSION="v4.135.0"
 ARG HA_CLI_VERSION="5.4.0"
-# hadolint ignore=SC2181, DL3008
 RUN \
     apt-get update \
     \
@@ -53,11 +52,11 @@ RUN \
     && sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen \
     && locale-gen \
     \
-    && curl https://bootstrap.pypa.io/get-pip.py | python3 \
+    && curl -fsSL https://bootstrap.pypa.io/get-pip.py | python3 \
     \
     && if [[ "${BUILD_ARCH}" = "aarch64" ]]; then ARCH="arm64"; fi \
     && if [[ "${BUILD_ARCH}" = "amd64" ]]; then ARCH="amd64"; fi \
-    && curl -J -L -o /tmp/code.tar.gz \
+    && curl -f -J -L -o /tmp/code.tar.gz \
         "https://github.com/coder/code-server/releases/download/${CODE_SERVER_VERSION}/code-server-${CODE_SERVER_VERSION#v}-linux-${ARCH}.tar.gz" \
     && mkdir -p /usr/local/lib/code-server \
     && tar zxvf \
@@ -69,27 +68,27 @@ RUN \
     && mkdir -p /root/.code-server/extensions \
     && uuid=$(uuidgen) \
     && while read -r ext; do \
-        extention="${ext%%#*}" \
-        vendor="${extention%%.*}"; \
-        slug="${extention#*.}"; \
+        extension="${ext%%#*}"; \
+        vendor="${extension%%.*}"; \
+        slug="${extension#*.}"; \
         version="${ext##*#}"; \
         \
         echo "Installing vscode extension: ${slug} by ${vendor} @ ${version} "; \
         \
         echo "https://marketplace.visualstudio.com/_apis/public/gallery/publishers/${vendor}/vsextensions/${slug}/${version}/vspackage"; \
-        curl -JL --retry 5 -o "/tmp/${extention}-${version}.vsix" \
+        curl -fJL --retry 5 -o "/tmp/${extension}-${version}.vsix" \
             -H "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.130 Safari/537.36" \
             -H "x-market-user-id: ${uuid}" \
             "https://marketplace.visualstudio.com/_apis/public/gallery/publishers/${vendor}/vsextensions/${slug}/${version}/vspackage"; \
-        mkdir -p "/usr/local/lib/code-server/lib/vscode/extensions/${extention}-${version}"; \
-        bsdtar --strip-components=1 -xf "/tmp/${extention}-${version}.vsix" \
-                    -C "/usr/local/lib/code-server/lib/vscode/extensions/${extention}-${version}" extension; \
-        [ $? -ne 0 ] && exit 1; \
+        mkdir -p "/usr/local/lib/code-server/lib/vscode/extensions/${extension}-${version}"; \
+        bsdtar --strip-components=1 -xf "/tmp/${extension}-${version}.vsix" \
+                    -C "/usr/local/lib/code-server/lib/vscode/extensions/${extension}-${version}" extension \
+            || exit 1; \
         sleep 1; \
     done < /root/vscode.extensions \
     && ls -la /usr/local/lib/code-server/lib/vscode/extensions/ \
     \
-    && curl -L -s -o /usr/bin/ha \
+    && curl -fsSL -o /usr/bin/ha \
         "https://github.com/home-assistant/cli/releases/download/${HA_CLI_VERSION}/ha_${BUILD_ARCH}" \
     && chmod a+x /usr/bin/ha \
     \
@@ -117,8 +116,10 @@ RUN \
         uuid-runtime \
     \
     && find /usr/local \
-        \( -type d -a -name test -o -name tests -o -name '__pycache__' \) \
-        -o \( -type f -a -name '*.pyc' -o -name '*.pyo' \) \
+        \( \
+            \( -type d -a \( -name test -o -name tests -o -name '__pycache__' \) \) \
+            -o \( -type f -a \( -name '*.pyc' -o -name '*.pyo' \) \) \
+        \) \
         -exec rm -rf '{}' + \
     \
     && rm -fr \
