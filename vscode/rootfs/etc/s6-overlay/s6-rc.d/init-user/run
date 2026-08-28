@@ -5,6 +5,7 @@
 # Persists user settings and installs custom user packages.
 # ==============================================================================
 readonly -a DIRECTORIES=(addon_configs addons backup homeassistant media share ssl)
+readonly CLAUDE_USER_PATH=/data/claude
 readonly GIT_USER_PATH=/data/git
 readonly SSH_USER_PATH=/data/.ssh
 readonly ZSH_HISTORY_FILE=/root/.zsh_history
@@ -68,6 +69,31 @@ if ! bashio::fs.file_exists "${GIT_USER_PATH}/.gitconfig"; then
         || bashio::exit.nok 'Failed to create .gitconfig'
 fi
 ln -s "${GIT_USER_PATH}/.gitconfig" ~/.gitconfig || bashio::log.warning "Failed linking .gitconfig"
+
+# Store Claude Code settings & credentials in app data folder. The service
+# points Claude Code here through CLAUDE_CONFIG_DIR, which covers both of the
+# locations it would otherwise use: ~/.claude and ~/.claude.json.
+if ! bashio::fs.directory_exists "${CLAUDE_USER_PATH}"; then
+    mkdir -p "${CLAUDE_USER_PATH}" \
+        || bashio::exit.nok 'Failed to create a persistent Claude Code folder'
+
+    chmod 700 "${CLAUDE_USER_PATH}" \
+        || bashio::exit.nok \
+            'Failed setting permissions on persistent Claude Code folder'
+fi
+
+# Migrate the non-persistent locations left behind by an older app version.
+# Existing files are never overwritten, and the originals are left alone;
+# they are simply no longer read once CLAUDE_CONFIG_DIR is set.
+if bashio::fs.directory_exists ~/.claude; then
+    cp -a -n ~/.claude/. "${CLAUDE_USER_PATH}/" \
+        || bashio::log.warning 'Failed migrating the Claude Code folder'
+fi
+
+if bashio::fs.file_exists ~/.claude.json; then
+    cp -a -n ~/.claude.json "${CLAUDE_USER_PATH}/.claude.json" \
+        || bashio::log.warning 'Failed migrating the Claude Code configuration'
+fi
 
 # Install user configured/requested packages
 if bashio::config.has_value 'packages'; then

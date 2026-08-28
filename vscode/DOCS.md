@@ -96,6 +96,57 @@ return to the defaults as delivered by this app, do the following:
 1. Execute the following command in the terminal window: `reset-settings`.
 1. Done!
 
+## Using AI coding assistants
+
+This app is built on [code-server][code-server], which is a build of
+VS Code that uses the [Open VSX][open-vsx] extension registry instead of the
+Microsoft Marketplace. Microsoft only allows their marketplace to be used by
+their own branded builds of Visual Studio Code, so which assistants you can
+use is decided by what is published on Open VSX.
+
+- **GitHub Copilot is not available.** The `GitHub.copilot` and
+  `GitHub.copilot-chat` extensions are published exclusively on the Microsoft
+  Marketplace and are not on Open VSX, so they cannot be found or installed
+  from within this app. VS Code may still advertise its built-in AI
+  features; attempting to enable them fails with
+  `extension GitHub.copilot-chat not found`.
+- **Claude Code works.** The `Anthropic.claude-code` extension is published on
+  Open VSX and can be installed from the Extensions view as usual. It bundles
+  its own `claude` binary, so no separate Node.js installation is needed.
+
+Because the app runs behind Home Assistant ingress, browser-based sign-in
+flows that redirect back to a `vscode://` URL do not work. Sign in from a
+terminal inside the editor instead:
+
+1. Open the Visual Studio Code editor.
+1. Click on `Terminal` in the top menu bar and click on `New Terminal`.
+1. Run `claude` and use the `/login` command, which prints a URL and asks you
+   to paste back the code it gives you.
+
+Claude Code keeps its settings and credentials in a configuration folder that
+this app points at its own data folder, so your login survives app restarts
+and updates.
+
+The bundled `claude` binary lives inside the extension folder. If you want it
+on your `PATH` for use in the terminal, add the following to the app's
+`init_commands` option:
+
+```yaml
+init_commands:
+  - for f in /data/vscode/extensions/anthropic.claude-code-*/resources/native-binary/claude; do test -x $f && ln -sf $f /usr/local/bin/claude; done; true
+```
+
+Init commands run before the editor starts, so the link appears after the
+first restart following the installation of the extension.
+
+Claude Code's optional voice input needs ALSA, which the app does not ship.
+Add it using the `packages` option if you want to use it:
+
+```yaml
+packages:
+  - libasound2t64
+```
+
 ## Known issues and limitations
 
 - Can this app run on a Raspberry Pi? Yes, but only if you run a 64 bits
@@ -181,12 +232,14 @@ SOFTWARE.
 
 [addon-badge]: https://my.home-assistant.io/badges/supervisor_addon.svg
 [addon]: https://my.home-assistant.io/redirect/supervisor_addon/?addon=a0d7b954_vscode&repository_url=https%3A%2F%2Fgithub.com%2Fhassio-addons%2Frepository
+[code-server]: https://github.com/coder/code-server
 [contributors]: https://github.com/hassio-addons/app-vscode/graphs/contributors
 [discord-ha]: https://discord.gg/c5DvZ4e
 [discord]: https://discord.me/hassioaddons
 [forum]: https://community.home-assistant.io/t/home-assistant-community-add-on-visual-studio-code/107863?u=frenck
 [frenck]: https://github.com/frenck
 [issue]: https://github.com/hassio-addons/app-vscode/issues
+[open-vsx]: https://open-vsx.org
 [reddit]: https://reddit.com/r/homeassistant
 [releases]: https://github.com/hassio-addons/app-vscode/releases
 [semver]: https://semver.org/spec/v2.0.0
