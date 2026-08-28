@@ -31,7 +31,16 @@ if ! bashio::fs.directory_exists "${SSH_USER_PATH}"; then
         || bashio::exit.nok \
             'Failed setting permissions on persistent .ssh folder'
 fi
-ln -sn "${SSH_USER_PATH}" ~/.ssh || bashio::log.warning "Failed linking .ssh"
+
+# The image ships an empty ~/.ssh; without removing it, the link below
+# would end up inside it as ~/.ssh/.ssh instead of replacing it.
+if [[ -d ~/.ssh ]] && [[ ! -L ~/.ssh ]]; then
+    # Clean up the nested link left behind by earlier versions
+    rm -f ~/.ssh/.ssh
+    rmdir ~/.ssh \
+        || bashio::log.warning "Not replacing non-empty ${HOME}/.ssh"
+fi
+ln -sfn "${SSH_USER_PATH}" ~/.ssh || bashio::log.warning "Failed linking .ssh"
 
 # Sets up ZSH shell
 touch "${ZSH_HISTORY_PERSISTANT_FILE}" \
