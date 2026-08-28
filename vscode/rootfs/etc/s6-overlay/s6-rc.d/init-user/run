@@ -1,7 +1,7 @@
 #!/command/with-contenv bashio
 # shellcheck shell=bash
 # ==============================================================================
-# Home Assistant Community Add-on: Studio Code Server
+# Home Assistant Community App: Studio Code Server
 # Persists user settings and installs custom user packages.
 # ==============================================================================
 readonly -a DIRECTORIES=(addon_configs addons backup homeassistant media share ssl)
@@ -22,7 +22,7 @@ ln -sn "/config" "${HOME}/config" \
 ln -sn "/config" "/homeassistant" \
     || bashio::log.warning "Failed linking common directory: /homeassistant"
 
-# Store SSH settings in add-on data folder
+# Store SSH settings in app data folder
 if ! bashio::fs.directory_exists "${SSH_USER_PATH}"; then
     mkdir -p "${SSH_USER_PATH}" \
         || bashio::exit.nok 'Failed to create a persistent .ssh folder'
@@ -44,7 +44,7 @@ chmod 600 "$ZSH_HISTORY_PERSISTANT_FILE" \
 ln -s -f "$ZSH_HISTORY_PERSISTANT_FILE" "$ZSH_HISTORY_FILE" \
     || bashio::exit.nok 'Failed linking the persistant ZSH history file'
 
-# Store user GIT settings in add-on data folder
+# Store user GIT settings in app data folder
 if ! bashio::fs.directory_exists "${GIT_USER_PATH}"; then
     mkdir -p "${GIT_USER_PATH}" \
         || bashio::exit.nok 'Failed to create a persistent git folder'

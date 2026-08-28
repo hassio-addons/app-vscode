@@ -1,7 +1,7 @@
 #!/command/with-contenv bashio
 # shellcheck shell=bash
 # ==============================================================================
-# Home Assistant Community Add-on: Studio Code Server
+# Home Assistant Community App: Studio Code Server
 # Runs the code-server
 # ==============================================================================
 declare -a options
