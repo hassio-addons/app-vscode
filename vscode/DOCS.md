@@ -72,7 +72,7 @@ When not configured, the app will automatically use the default: `/config`
 
 ### Option: `packages`
 
-Allows you to specify additional [Ubuntu packages][ubuntu-packages] to be
+Allows you to specify additional [Debian packages][debian-packages] to be
 installed in your shell environment (e.g., Python, PHP, Go).
 
 **Note**: _Adding many packages will result in a longer start-up
@@ -234,6 +234,7 @@ SOFTWARE.
 [addon]: https://my.home-assistant.io/redirect/supervisor_addon/?addon=a0d7b954_vscode&repository_url=https%3A%2F%2Fgithub.com%2Fhassio-addons%2Frepository
 [code-server]: https://github.com/coder/code-server
 [contributors]: https://github.com/hassio-addons/app-vscode/graphs/contributors
+[debian-packages]: https://packages.debian.org
 [discord-ha]: https://discord.gg/c5DvZ4e
 [discord]: https://discord.me/hassioaddons
 [forum]: https://community.home-assistant.io/t/home-assistant-community-add-on-visual-studio-code/107863?u=frenck
@@ -243,4 +244,3 @@ SOFTWARE.
 [reddit]: https://reddit.com/r/homeassistant
 [releases]: https://github.com/hassio-addons/app-vscode/releases
 [semver]: https://semver.org/spec/v2.0.0
-[ubuntu-packages]: https://packages.ubuntu.com

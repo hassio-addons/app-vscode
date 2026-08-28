@@ -94,9 +94,9 @@
     {
       "customType": "regex",
       "managerFilePatterns": ["/vscode/vscode.extensions$/"],
-      "matchStrings": ["netcorext\\.uuid-generator#(?<currentValue>.+)\\s"],
+      "matchStrings": ["redhat\\.vscode-yaml#(?<currentValue>.+)\\s"],
       "datasourceTemplate": "github-releases",
-      "depNameTemplate": "arenchen/vscode-uuid-generator"
+      "depNameTemplate": "redhat-developer/vscode-yaml"
     },
     {
       "customType": "regex",
