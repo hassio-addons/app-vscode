@@ -70,7 +70,9 @@ if ! bashio::fs.file_exists "${GIT_USER_PATH}/.gitconfig"; then
 fi
 ln -s "${GIT_USER_PATH}/.gitconfig" ~/.gitconfig || bashio::log.warning "Failed linking .gitconfig"
 
-# Store Claude Code settings & credentials in app data folder
+# Store Claude Code settings & credentials in app data folder. The service
+# points Claude Code here through CLAUDE_CONFIG_DIR, which covers both of the
+# locations it would otherwise use: ~/.claude and ~/.claude.json.
 if ! bashio::fs.directory_exists "${CLAUDE_USER_PATH}"; then
     mkdir -p "${CLAUDE_USER_PATH}" \
         || bashio::exit.nok 'Failed to create a persistent Claude Code folder'
@@ -80,23 +82,17 @@ if ! bashio::fs.directory_exists "${CLAUDE_USER_PATH}"; then
             'Failed setting permissions on persistent Claude Code folder'
 fi
 
-# Migrate a non-persistent folder left behind by an older app version
-if bashio::fs.directory_exists ~/.claude && [[ ! -L ~/.claude ]]; then
-    if cp -a ~/.claude/. "${CLAUDE_USER_PATH}/"; then
-        rm -rf ~/.claude \
-            || bashio::log.warning \
-                'Failed removing non-persistent Claude Code folder'
-    else
-        bashio::log.warning \
-            'Failed migrating Claude Code folder, leaving it in place'
-    fi
+# Migrate the non-persistent locations left behind by an older app version.
+# Existing files are never overwritten, and the originals are left alone;
+# they are simply no longer read once CLAUDE_CONFIG_DIR is set.
+if bashio::fs.directory_exists ~/.claude; then
+    cp -a -n ~/.claude/. "${CLAUDE_USER_PATH}/" \
+        || bashio::log.warning 'Failed migrating the Claude Code folder'
 fi
 
-# Only link when nothing is left in the way, as linking onto an existing
-# folder would nest the link inside it
-if [[ ! -e ~/.claude || -L ~/.claude ]]; then
-    ln -sfn "${CLAUDE_USER_PATH}" ~/.claude \
-        || bashio::log.warning "Failed linking .claude"
+if bashio::fs.file_exists ~/.claude.json; then
+    cp -a -n ~/.claude.json "${CLAUDE_USER_PATH}/.claude.json" \
+        || bashio::log.warning 'Failed migrating the Claude Code configuration'
 fi
 
 # Install user configured/requested packages

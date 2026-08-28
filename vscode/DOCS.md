@@ -123,8 +123,9 @@ terminal inside the editor instead:
 1. Run `claude` and use the `/login` command, which prints a URL and asks you
    to paste back the code it gives you.
 
-Your login is stored in `~/.claude`, which this app persists in its data
-folder, so it survives app restarts and updates.
+Claude Code keeps its settings and credentials in a configuration folder that
+this app points at its own data folder, so your login survives app restarts
+and updates.
 
 The bundled `claude` binary lives inside the extension folder. If you want it
 on your `PATH` for use in the terminal, add the following to the app's
@@ -134,6 +135,9 @@ on your `PATH` for use in the terminal, add the following to the app's
 init_commands:
   - for f in /data/vscode/extensions/anthropic.claude-code-*/resources/native-binary/claude; do test -x $f && ln -sf $f /usr/local/bin/claude; done; true
 ```
+
+Init commands run before the editor starts, so the link appears after the
+first restart following the installation of the extension.
 
 Claude Code's optional voice input needs ALSA, which the app does not ship.
 Add it using the `packages` option if you want to use it:

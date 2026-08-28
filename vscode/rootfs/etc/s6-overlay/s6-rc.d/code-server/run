@@ -28,6 +28,11 @@ options+=(--auth none)
 export HASS_SERVER="http://supervisor/core"
 export HASS_TOKEN="${SUPERVISOR_TOKEN:-}"
 
+# Keep the Claude Code configuration in the persistent data folder. The
+# extension host and the integrated terminals inherit this, so both the
+# extension and the bundled claude binary use it.
+export CLAUDE_CONFIG_DIR="/data/claude"
+
 # Run the code server
 cd "${config_path}" || bashio::exit.nok "Could not change working directory"
 exec code-server "${options[@]}" "${config_path}"
