@@ -38,7 +38,7 @@ RUN \
         net-tools=2.10-1.3 \
         nmap=7.95+dfsg-3 \
         openssh-client=1:10.0p1-7+deb13u4 \
-        openssl \
+        openssl=3.5.7-1~deb13u3 \
         python3-dev=3.13.5-1 \
         python3-venv=3.13.5-1 \
         python3=3.13.5-1 \
