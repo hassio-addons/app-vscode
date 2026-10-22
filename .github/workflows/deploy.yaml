@@ -19,13 +19,13 @@ jobs:
       contents: read
       packages: read
       security-events: write
-    uses: hassio-addons/workflows/.github/workflows/app-ci.yaml@e0c532a7b0fb264b3ff0c718c2c0308a0c8c1390 # v4.0.0
+    uses: hassio-addons/workflows/.github/workflows/app-ci.yaml@adec4b96071354cc44924a6ef9975ff60cf9ddd9 # v5.0.0
 
   deploy:
     needs: ci
     permissions:
       contents: read
       packages: write
-    uses: hassio-addons/workflows/.github/workflows/app-deploy.yaml@e0c532a7b0fb264b3ff0c718c2c0308a0c8c1390 # v4.0.0
+    uses: hassio-addons/workflows/.github/workflows/app-deploy.yaml@adec4b96071354cc44924a6ef9975ff60cf9ddd9 # v5.0.0
     secrets:
       DISPATCH_TOKEN: ${{ secrets.DISPATCH_TOKEN }}
