@@ -14,6 +14,8 @@ arch:
   - aarch64
   - amd64
 uart: true
+privileged:
+  - NET_RAW
 hassio_api: true
 hassio_role: manager
 homeassistant_api: true
