@@ -1,4 +1,4 @@
 ---
 build_from:
-  aarch64: ghcr.io/hassio-addons/debian-base:9.5.2
-  amd64: ghcr.io/hassio-addons/debian-base:9.5.2
+  aarch64: ghcr.io/hassio-addons/debian-base:9.6.0
+  amd64: ghcr.io/hassio-addons/debian-base:9.6.0
